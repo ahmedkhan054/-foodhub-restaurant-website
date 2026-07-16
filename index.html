@@ -1,0 +1,2195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Online Restaurant - Order Food Online</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Order delicious food online from our restaurant. Browse our menu, place orders, and get home delivery." />
+    <meta name="keywords" content="restaurant, online food, order food, home delivery, pizza, burger" />
+    <meta name="author" content="Online Restaurant" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+    <!-- Swiper.js Slider -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <!-- Custom CSS -->
+    <style>
+        /* ============================================================
+                   CSS VARIABLES & RESET
+                   ============================================================ */
+        :root {
+            --primary: #e85d3a;
+            --primary-dark: #c94a2a;
+            --secondary: #2d2d2d;
+            --accent: #f9c74f;
+            --light: #f8f9fa;
+            --dark: #1a1a1a;
+            --text: #333;
+            --text-light: #777;
+            --white: #fff;
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.15);
+            --radius: 16px;
+            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --font-primary: 'Playfair Display', serif;
+            --font-secondary: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-secondary);
+            color: var(--text);
+            background: var(--white);
+            overflow-x: hidden;
+            padding-top: 76px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        .section-padding {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            font-family: var(--font-primary);
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        .section-title span {
+            color: var(--primary);
+        }
+
+        .section-subtitle {
+            color: var(--text-light);
+            font-size: 1.05rem;
+            max-width: 580px;
+            margin: 0 auto 40px;
+            font-weight: 300;
+        }
+
+        .section-divider {
+            width: 70px;
+            height: 4px;
+            background: var(--primary);
+            margin: 12px auto 24px;
+            border-radius: 4px;
+        }
+
+        .btn-primary-custom {
+            background: var(--primary);
+            color: var(--white);
+            padding: 12px 32px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 24px rgba(232, 93, 58, 0.35);
+        }
+
+        .btn-primary-custom:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(232, 93, 58, 0.45);
+            color: var(--white);
+        }
+
+        .btn-outline-custom {
+            background: transparent;
+            color: var(--primary);
+            padding: 12px 32px;
+            border: 2px solid var(--primary);
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-outline-custom:hover {
+            background: var(--primary);
+            color: var(--white);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(232, 93, 58, 0.3);
+        }
+
+        /* ============================================================
+                   LOADING SPINNER
+                   ============================================================ */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        #loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ============================================================
+                   NAVBAR / STICKY HEADER
+                   ============================================================ */
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 30px rgba(0, 0, 0, 0.06);
+            padding: 12px 0;
+            transition: var(--transition);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+        }
+
+        .navbar-custom.scrolled {
+            padding: 8px 0;
+            box-shadow: 0 4px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-custom .navbar-brand {
+            font-family: var(--font-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .navbar-custom .navbar-brand span {
+            color: var(--primary);
+        }
+
+        .navbar-custom .nav-link {
+            color: var(--secondary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 8px 18px !important;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .navbar-custom .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .navbar-custom .nav-link:hover::after,
+        .navbar-custom .nav-link.active::after {
+            width: 60%;
+        }
+
+        .navbar-custom .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .navbar-custom .cart-icon {
+            position: relative;
+            font-size: 1.2rem;
+            color: var(--secondary);
+            transition: var(--transition);
+        }
+
+        .navbar-custom .cart-icon:hover {
+            color: var(--primary);
+        }
+
+        .navbar-custom .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: var(--primary);
+            color: var(--white);
+            font-size: 0.65rem;
+            font-weight: 600;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        /* ============================================================
+                   HERO BANNER
+                   ============================================================ */
+        .hero {
+            min-height: 92vh;
+            background: linear-gradient(135deg, #fdf6f0 0%, #f8ede8 100%);
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            padding: 40px 0;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(232, 93, 58, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero .hero-badge {
+            display: inline-block;
+            background: rgba(232, 93, 58, 0.12);
+            color: var(--primary);
+            padding: 6px 20px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .hero h1 {
+            font-family: var(--font-primary);
+            font-size: 4.2rem;
+            font-weight: 700;
+            line-height: 1.15;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            color: var(--primary);
+            position: relative;
+        }
+
+        .hero h1 span::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 0;
+            width: 100%;
+            height: 12px;
+            background: rgba(232, 93, 58, 0.15);
+            border-radius: 4px;
+            z-index: -1;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-light);
+            max-width: 500px;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .hero .hero-image {
+            position: relative;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .hero .hero-image img {
+            max-width: 100%;
+            border-radius: 30px;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.12);
+        }
+
+        .hero .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .hero .hero-stats .stat-item h4 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin: 0;
+        }
+
+        .hero .hero-stats .stat-item p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin: 0;
+        }
+
+        /* ============================================================
+                   FEATURED DISHES / FOOD CARDS
+                   ============================================================ */
+        .food-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            height: 100%;
+            position: relative;
+        }
+
+        .food-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .food-card .food-img {
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .food-card .food-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .food-card:hover .food-img img {
+            transform: scale(1.08);
+        }
+
+        .food-card .food-img .food-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: var(--primary);
+            color: var(--white);
+            padding: 4px 16px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .food-card .food-img .food-badge.badge-sale {
+            background: #e74c3c;
+        }
+
+        .food-card .food-img .food-badge.badge-popular {
+            background: var(--accent);
+            color: var(--secondary);
+        }
+
+        .food-card .food-body {
+            padding: 20px 22px 22px;
+        }
+
+        .food-card .food-body .food-category {
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .food-card .food-body h5 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin: 4px 0 8px;
+            transition: var(--transition);
+        }
+
+        .food-card .food-body h5:hover {
+            color: var(--primary);
+        }
+
+        .food-card .food-body .food-desc {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .food-card .food-body .food-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .food-card .food-body .food-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .food-card .food-body .food-price .old-price {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            text-decoration: line-through;
+            font-weight: 400;
+            margin-left: 8px;
+        }
+
+        .food-card .food-body .btn-add-cart {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .food-card .food-body .btn-add-cart:hover {
+            background: var(--primary-dark);
+            transform: rotate(90deg);
+        }
+
+        /* ============================================================
+                   CATEGORY FILTER
+                   ============================================================ */
+        .category-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .category-filter .filter-btn {
+            padding: 8px 24px;
+            border: 2px solid #e8e8e8;
+            border-radius: 50px;
+            background: transparent;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        .category-filter .filter-btn:hover,
+        .category-filter .filter-btn.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(232, 93, 58, 0.3);
+        }
+
+        /* ============================================================
+                   TESTIMONIALS SLIDER
+                   ============================================================ */
+        .testimonial-slider .swiper-slide {
+            padding: 30px;
+        }
+
+        .testimonial-card {
+            background: var(--white);
+            padding: 32px 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .testimonial-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-5px);
+        }
+
+        .testimonial-card .testimonial-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 16px;
+            border: 4px solid rgba(232, 93, 58, 0.15);
+        }
+
+        .testimonial-card .testimonial-stars {
+            color: #f9c74f;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        .testimonial-card .testimonial-text {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            line-height: 1.7;
+            font-style: italic;
+        }
+
+        .testimonial-card .testimonial-name {
+            font-weight: 600;
+            margin-top: 12px;
+            color: var(--secondary);
+        }
+
+        .testimonial-card .testimonial-role {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* ============================================================
+                   GALLERY
+                   ============================================================ */
+        .gallery-grid .gallery-item {
+            border-radius: var(--radius);
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .gallery-grid .gallery-item img {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .gallery-grid .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-grid .gallery-item .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .gallery-grid .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-grid .gallery-item .gallery-overlay i {
+            color: var(--white);
+            font-size: 2.5rem;
+            transform: scale(0.5);
+            transition: var(--transition);
+        }
+
+        .gallery-grid .gallery-item:hover .gallery-overlay i {
+            transform: scale(1);
+        }
+
+        /* ============================================================
+                   PROMO / OFFER BANNERS
+                   ============================================================ */
+        .promo-banner {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 50px 40px;
+            border-radius: var(--radius);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 50%;
+        }
+
+        .promo-banner h2 {
+            font-family: var(--font-primary);
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .promo-banner .promo-code {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 28px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            backdrop-filter: blur(4px);
+            border: 1px dashed rgba(255, 255, 255, 0.3);
+        }
+
+        /* Flash Sale */
+        .flash-sale {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 30px 40px;
+            border-radius: var(--radius);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flash-sale .flash-timer {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .flash-sale .flash-timer .time-block {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 10px 18px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 60px;
+        }
+
+        .flash-sale .flash-timer .time-block span {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .flash-sale .flash-timer .time-block small {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            text-transform: uppercase;
+        }
+
+        /* ============================================================
+                   CONTACT / MAP
+                   ============================================================ */
+        .contact-info-box {
+            background: var(--white);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            height: 100%;
+            text-align: center;
+        }
+
+        .contact-info-box:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .contact-info-box .icon-circle {
+            width: 60px;
+            height: 60px;
+            background: rgba(232, 93, 58, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 1.4rem;
+            color: var(--primary);
+        }
+
+        .contact-info-box h5 {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .contact-info-box p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .map-container {
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            height: 100%;
+            min-height: 350px;
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            min-height: 350px;
+            border: 0;
+        }
+
+        /* ============================================================
+                   FOOTER
+                   ============================================================ */
+        .footer {
+            background: var(--dark);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 60px 0 0;
+        }
+
+        .footer h5 {
+            color: var(--white);
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.7);
+            transition: var(--transition);
+        }
+
+        .footer a:hover {
+            color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .footer .footer-links li {
+            list-style: none;
+            margin-bottom: 10px;
+        }
+
+        .footer .footer-links li a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 50%;
+            margin-right: 8px;
+            transition: var(--transition);
+            font-size: 1.1rem;
+            color: var(--white);
+        }
+
+        .footer .social-icons a:hover {
+            background: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        .footer .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 20px 0;
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* ============================================================
+                   MODAL / POPUP STYLES
+                   ============================================================ */
+        .promo-popup .modal-content {
+            border-radius: var(--radius);
+            border: none;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .promo-popup .modal-body {
+            padding: 40px 35px;
+            text-align: center;
+        }
+
+        .promo-popup .modal-body .popup-icon {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .promo-popup .modal-body h3 {
+            font-family: var(--font-primary);
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .promo-popup .modal-body h3 span {
+            color: var(--primary);
+        }
+
+        .promo-popup .modal-body .popup-code {
+            display: inline-block;
+            background: rgba(232, 93, 58, 0.1);
+            padding: 6px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            color: var(--primary);
+            margin: 12px 0 16px;
+            border: 1px dashed var(--primary);
+        }
+
+        /* Exit Intent Popup */
+        .exit-popup .modal-content {
+            border-radius: var(--radius);
+            border: none;
+        }
+
+        /* ============================================================
+                   ANIMATED COUNTERS
+                   ============================================================ */
+        .counter-box {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .counter-box .counter-number {
+            font-family: var(--font-primary);
+            font-size: 3.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .counter-box p {
+            color: var(--text-light);
+            font-weight: 500;
+            margin: 0;
+        }
+
+        /* ============================================================
+                   CART PAGE
+                   ============================================================ */
+        .cart-table img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .cart-table .qty-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cart-table .qty-control button {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            background: transparent;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-table .qty-control button:hover {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        .cart-table .qty-control span {
+            font-weight: 600;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .cart-summary {
+            background: var(--light);
+            padding: 30px;
+            border-radius: var(--radius);
+            position: sticky;
+            top: 100px;
+        }
+
+        .cart-summary h5 {
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .cart-summary .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .cart-summary .summary-row.total {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding-top: 16px;
+        }
+
+        /* ============================================================
+                   CHECKOUT
+                   ============================================================ */
+        .checkout-form .form-control {
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1.5px solid #e8e8e8;
+            transition: var(--transition);
+        }
+
+        .checkout-form .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(232, 93, 58, 0.1);
+        }
+
+        .checkout-form .form-label {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        /* ============================================================
+                   RESPONSIVE
+                   ============================================================ */
+        @media (max-width: 991.98px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            .hero .hero-image {
+                margin-top: 40px;
+            }
+            .section-title {
+                font-size: 2.2rem;
+            }
+            .section-padding {
+                padding: 60px 0;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            body {
+                padding-top: 66px;
+            }
+            .hero {
+                min-height: auto;
+                padding: 60px 0;
+            }
+            .hero h1 {
+                font-size: 2.4rem;
+            }
+            .hero .hero-stats {
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .promo-banner h2 {
+                font-size: 1.8rem;
+            }
+            .flash-sale .flash-timer .time-block {
+                min-width: 48px;
+                padding: 6px 12px;
+            }
+            .flash-sale .flash-timer .time-block span {
+                font-size: 1.3rem;
+            }
+            .navbar-custom .navbar-brand {
+                font-size: 1.4rem;
+            }
+            .footer {
+                padding: 40px 0 0;
+            }
+            .gallery-grid .gallery-item img {
+                height: 200px;
+            }
+            .cart-table img {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .section-padding {
+                padding: 40px 0;
+            }
+            .promo-banner {
+                padding: 30px 20px;
+            }
+            .promo-banner h2 {
+                font-size: 1.5rem;
+            }
+            .category-filter .filter-btn {
+                padding: 6px 16px;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* ============================================================
+                   SCROLL REVEAL (AOS Overrides)
+                   ============================================================ */
+        [data-aos] {
+            pointer-events: none;
+        }
+        [data-aos].aos-animate {
+            pointer-events: auto;
+        }
+
+        /* ============================================================
+                   NEWSLETTER SECTION
+                   ============================================================ */
+        .newsletter-section {
+            background: linear-gradient(135deg, #fdf6f0, #f8ede8);
+            padding: 60px 0;
+            border-radius: var(--radius);
+            margin: 20px 0;
+        }
+
+        .newsletter-section .form-control {
+            border-radius: 50px;
+            padding: 14px 24px;
+            border: 2px solid #e8e8e8;
+            transition: var(--transition);
+        }
+
+        .newsletter-section .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(232, 93, 58, 0.1);
+        }
+
+        .newsletter-section .btn-primary-custom {
+            border-radius: 50px;
+            padding: 14px 36px;
+        }
+
+        /* ============================================================
+                   SCROLL TO TOP
+                   ============================================================ */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 48px;
+            height: 48px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            box-shadow: 0 8px 24px rgba(232, 93, 58, 0.35);
+            transition: var(--transition);
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .scroll-top:hover {
+            background: var(--primary-dark);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(232, 93, 58, 0.45);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    LOADING SPINNER
+    ============================================================ -->
+    <div id="loader">
+        <div class="loader-spinner"></div>
+    </div>
+
+    <!-- ============================================================
+    SCROLL TO TOP BUTTON
+    ============================================================ -->
+    <button class="scroll-top" id="scrollTopBtn" aria-label="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- ============================================================
+    NAVBAR
+    ============================================================ -->
+    <nav class="navbar navbar-expand-lg navbar-custom" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand" href="index.php">
+                <i class="fas fa-utensils" style="color:var(--primary);"></i>
+                Food<span>Hub</span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item"><a class="nav-link active" href="index.php">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#menu">Menu</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#gallery">Gallery</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link cart-icon" href="cart.php">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span class="cart-badge" id="cartBadge">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <a href="checkout.php" class="btn btn-primary-custom btn-sm" style="padding:8px 24px;font-size:0.85rem;">
+                            <i class="fas fa-receipt"></i> Order Now
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================================================
+    HERO BANNER
+    ============================================================ -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6" data-aos="fade-right" data-aos-duration="1000">
+                    <span class="hero-badge"><i class="fas fa-fire me-1"></i> 25% OFF Today</span>
+                    <h1>Delicious Food <br /><span>Delivered</span> to You</h1>
+                    <p>Experience the finest flavors crafted with love. Order your favorite dishes online and enjoy fast home delivery.</p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="#menu" class="btn btn-primary-custom">
+                            <i class="fas fa-utensils"></i> Explore Menu
+                        </a>
+                        <a href="#about" class="btn btn-outline-custom">
+                            <i class="fas fa-play-circle"></i> Learn More
+                        </a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <h4><span class="counter-number" data-target="150">0</span>+</h4>
+                            <p>Dishes Available</p>
+                        </div>
+                        <div class="stat-item">
+                            <h4><span class="counter-number" data-target="500">0</span>+</h4>
+                            <p>Happy Customers</p>
+                        </div>
+                        <div class="stat-item">
+                            <h4><span class="counter-number" data-target="30">0</span>+</h4>
+                            <p>Delivery Zones</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
+                    <div class="hero-image">
+                        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&h=500&fit=crop&crop=center" alt="Delicious Food" class="img-fluid" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    FEATURED DISHES / MENU SECTION
+    ============================================================ -->
+    <section class="section-padding" id="menu">
+        <div class="container">
+            <div class="text-center" data-aos="fade-up">
+                <span class="hero-badge" style="background:rgba(232,93,58,0.1);">Our Menu</span>
+                <h2 class="section-title">Explore Our <span>Featured</span> Dishes</h2>
+                <div class="section-divider"></div>
+                <p class="section-subtitle">Handpicked selection of our most popular and delicious dishes, made with fresh ingredients.</p>
+            </div>
+
+            <!-- Category Filter -->
+            <div class="category-filter" data-aos="fade-up" data-aos-delay="100">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="pizza">Pizza</button>
+                <button class="filter-btn" data-filter="burger">Burger</button>
+                <button class="filter-btn" data-filter="pasta">Pasta</button>
+                <button class="filter-btn" data-filter="dessert">Dessert</button>
+                <button class="filter-btn" data-filter="drinks">Drinks</button>
+            </div>
+
+            <!-- Food Grid -->
+            <div class="row g-4" id="foodGrid">
+                <!-- Card 1 -->
+                <div class="col-lg-3 col-md-6" data-category="pizza" data-aos="fade-up" data-aos-delay="100">
+                    <div class="food-card">
+                        <div class="food-img">
+                            <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=260&fit=crop&crop=center" alt="Margherita Pizza" />
+                            <span class="food-badge badge-sale">-20%</span>
+                        </div>
+                        <div class="food-body">
+                            <span class="food-category"><i class="fas fa-tag me-1"></i> Pizza</span>
+                            <h5>Margherita Pizza</h5>
+                            <p class="food-desc">Classic tomato sauce, mozzarella, fresh basil.</p>
+                            <div class="food-footer">
+                                <span class="food-price">$10.99 <span class="old-price">$13.99</span></span>
+                                <button class="btn-add-cart add-to-cart" data-id="1" data-name="Margherita Pizza" data-price="10.99" data-image="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=100&h=100&fit=crop&crop=center">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="col-lg-3 col-md-6" data-category="burger" data-aos="fade-up" data-aos-delay="150">
+                    <div class="food-card">
+                        <div class="food-img">
+                            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=260&fit=crop&crop=center" alt="Classic Burger" />
+                            <span class="food-badge badge-popular"><i class="fas fa-star"></i> Popular</span>
+                        </div>
+                        <div class="food-body">
+                            <span class="food-category"><i class="fas fa-tag me-1"></i> Burger</span>
+                            <h5>Classic Beef Burger</h5>
+                            <p class="food-desc">Juicy beef patty, cheddar, lettuce, tomato, special sauce.</p>
+                            <div class="food-footer">
+                                <span class="food-price">$8.99</span>
+                                <button class="btn-add-cart add-to-cart" data-id="2" data-name="Classic Beef Burger" data-price="8.99" data-image="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=100&h=100&fit=crop&crop=center">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="col-lg-3 col-md-6" data-category="pasta" data-aos="fade-up" data-aos-delay="200">
+                    <div class="food-card">
+                        <div class="food-img">
+                            <img src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=400&h=260&fit=crop&crop=center" alt="Pasta Carbonara" />
+                            <span class="food-badge">Chef's Pick</span>
+                        </div>
+                        <div class="food-body">
+                            <span class="food-category"><i class="fas fa-tag me-1"></i> Pasta</span>
+                            <h5>Pasta Carbonara</h5>
+                            <p class="food-desc">Creamy sauce, pancetta, parmesan, black pepper.</p>
+                            <div class="food-footer">
+                                <span class="food-price">$12.49</span>
+                                <button class="btn-add-cart add-to-cart" data-id="3" data-name="Pasta Carbonara" data-price="12.49" data-image="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=100&h=100&fit=crop&crop=center">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="col-lg-3 col-md-6" data-category="dessert" data-aos="fade-up" data-aos-delay="250">
+                    <div class="food-card">
+                        <div class="food-img">
+                            <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=260&fit=crop&crop=center" alt="Chocolate Cake" />
+                            <span class="food-badge badge-sale">-15%</span>
+                        </div>
+                        <div class="food-body">
+                            <span class="food-category"><i class="fas fa-tag me-1"></i> Dessert</span>
+                            <h5>Chocolate Fudge Cake</h5>
+                            <p class="food-desc">Rich chocolate cake with ganache and berries.</p>
+                            <div class="food-footer">
+                                <span class="food-price">$6.99 <span class="old-price">$8.49</span></span>
+                                <button class="btn-add-cart add-to-cart" data-id="4" data-name="Chocolate Fudge Cake" data-price="6.99" data-image="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=100&h=100&fit=crop&crop=center">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="col-lg-3 col-md-6" data-category="drinks" data-aos="fade-up" data-aos-delay="100">
+                    <div class="food-card">
+                        <div class="food-img">
+                            <img src="https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?w=400&h=260&fit=crop&crop=center" alt="Fresh Juice" />
+                        </div>
+                        <div class="food-body">
+                            <span class="food-category"><i class="fas fa-tag me-1"></i> Drinks</span>
+                            <h5>Fresh Orange Juice</h5>
+                            <p class="food-desc">100% pure squeezed orange juice, served chilled.</p>
+                            <div class="food-footer">
+                                <span class="food-price">$4.49</span>
+                                <button class="btn-add-cart add-to-cart" data-id="5" data-name="Fresh Orange Juice" data-price="4.49" data-image="https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?w=100&h=100&fit=crop&crop=center">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="col-lg-3 col-md-6" data-category="pizza" data-aos="fade-up" data-aos-delay="150">
+                    <div class="food-card">
+                        <div class="food-img">
+                            <img src="https://images.unsplash.com/photo-1594007654729-407eedc4be65?w=400&h=260&fit=crop&crop=center" alt="Pepperoni Pizza" />
+                            <span class="food-badge badge-popular"><i class="fas fa-star"></i> Bestseller</span>
+                        </div>
+                        <div class="food-body">
+                            <span class="food-category"><i class="fas fa-tag me-1"></i> Pizza</span>
+                            <h5>Pepperoni Pizza</h5>
+                            <p class="food-desc">Pepperoni, mozzarella, tomato sauce, oregano.</p>
+                            <div class="food-footer">
+                                <span class="food-price">$11.99</span>
+                                <button class="btn-add-cart add-to-cart" data-id="6" data-name="Pepperoni Pizza" data-price="11.99" data-image="https://images.unsplash.com/photo-1594007654729-407eedc4be65?w=100&h=100&fit=crop&crop=center">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 7 -->
+                <div class="col-lg-3 col-md-6" data-category="burger" data-aos="fade-up" data-aos-delay="200">
+                    <div class="food-card">
+                        <div class="food-img">
+                            <img src="https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=400&h=260&fit=crop&crop=center" alt="Chicken Burger" />
+                        </div>
+                        <div class="food-body">
+                            <span class="food-category"><i class="fas fa-tag me-1"></i> Burger</span>
+                            <h5>Grilled Chicken Burger</h5>
+                            <p class="food-desc">Grilled chicken breast, avocado, lettuce, mayo.</p>
+                            <div class="food-footer">
+                                <span class="food-price">$9.49</span>
+                                <button class="btn-add-cart add-to-cart" data-id="7" data-name="Grilled Chicken Burger" data-price="9.49" data-image="https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=100&h=100&fit=crop&crop=center">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 8 -->
+                <div class="col-lg-3 col-md-6" data-category="dessert" data-aos="fade-up" data-aos-delay="250">
+                    <div class="food-card">
+                        <div class="food-img">
+                            <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&h=260&fit=crop&crop=center" alt="Ice Cream" />
+                        </div>
+                        <div class="food-body">
+                            <span class="food-category"><i class="fas fa-tag me-1"></i> Dessert</span>
+                            <h5>Vanilla Ice Cream</h5>
+                            <p class="food-desc">Creamy vanilla ice cream with chocolate sauce.</p>
+                            <div class="food-footer">
+                                <span class="food-price">$3.99</span>
+                                <button class="btn-add-cart add-to-cart" data-id="8" data-name="Vanilla Ice Cream" data-price="3.99" data-image="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=100&h=100&fit=crop&crop=center">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-5" data-aos="fade-up">
+                <a href="menu.php" class="btn btn-primary-custom">
+                    <i class="fas fa-eye"></i> View Full Menu
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    PROMO BANNER - Limited Time Offer
+    ============================================================ -->
+    <section class="container" data-aos="fade-up" data-aos-duration="800">
+        <div class="promo-banner">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <span class="hero-badge" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.2);">
+                        <i class="fas fa-clock me-1"></i> Limited Time Offer
+                    </span>
+                    <h2>Get <span style="color:#ffd700;">25% OFF</span> on Your First Order</h2>
+                    <p style="opacity:0.85;max-width:500px;">Use promo code at checkout and enjoy delicious food at unbeatable prices.</p>
+                    <div class="promo-code mt-3">FIRST25</div>
+                </div>
+                <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                    <a href="#menu" class="btn btn-light" style="border-radius:50px;padding:12px 36px;font-weight:600;color:var(--primary);">
+                        <i class="fas fa-arrow-right"></i> Order Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    TODAY'S SPECIAL OFFERS / FLASH SALE
+    ============================================================ -->
+    <section class="container mt-5" data-aos="fade-up">
+        <div class="flash-sale">
+            <div class="row align-items-center">
+                <div class="col-lg-4">
+                    <span class="hero-badge" style="background:rgba(255,215,0,0.15);color:#ffd700;border:1px solid rgba(255,215,0,0.2);">
+                        <i class="fas fa-bolt me-1"></i> Flash Sale
+                    </span>
+                    <h3 style="font-family:var(--font-primary);font-size:1.8rem;margin:8px 0 4px;">Today's Special</h3>
+                    <p style="opacity:0.7;">Hurry up! Limited items available at discounted prices.</p>
+                </div>
+                <div class="col-lg-4">
+                    <div class="flash-timer" id="flashTimer">
+                        <div class="time-block"><span id="hours">02</span><small>Hours</small></div>
+                        <div class="time-block"><span id="minutes">34</span><small>Mins</small></div>
+                        <div class="time-block"><span id="seconds">56</span><small>Secs</small></div>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                    <a href="#menu" class="btn btn-primary-custom" style="background:#ffd700;color:#1a1a2e;box-shadow:0 8px 24px rgba(255,215,0,0.3);">
+                        <i class="fas fa-shopping-bag"></i> Grab Deals
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    ABOUT US
+    ============================================================ -->
+    <section class="section-padding" id="about">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <span class="hero-badge" style="background:rgba(232,93,58,0.1);">About Us</span>
+                    <h2 class="section-title" style="font-size:2.5rem;">We Deliver <span>Fresh &amp; Tasty</span> Food</h2>
+                    <div class="section-divider" style="margin-left:0;"></div>
+                    <p style="color:var(--text-light);line-height:1.8;">At FoodHub, we believe that great food brings people together. Our chefs craft each dish with passion using the finest ingredients, ensuring every bite is a memorable experience.</p>
+                    <p style="color:var(--text-light);line-height:1.8;">From our kitchen to your door, we prioritize quality, freshness, and timely delivery. Join thousands of satisfied customers who enjoy our delicious meals every day.</p>
+                    <div class="row mt-4 g-3">
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="fas fa-check-circle" style="color:var(--primary);font-size:1.4rem;"></i>
+                                <div><strong>Fresh Ingredients</strong><br /><small style="color:var(--text-light);">100% quality assured</small></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="fas fa-truck" style="color:var(--primary);font-size:1.4rem;"></i>
+                                <div><strong>Fast Delivery</strong><br /><small style="color:var(--text-light);">Within 30-45 minutes</small></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="fas fa-chef" style="color:var(--primary);font-size:1.4rem;"></i>
+                                <div><strong>Expert Chefs</strong><br /><small style="color:var(--text-light);">10+ years experience</small></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="fas fa-leaf" style="color:var(--primary);font-size:1.4rem;"></i>
+                                <div><strong>Healthy Options</strong><br /><small style="color:var(--text-light);">Nutritious meals available</small></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
+                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&h=450&fit=crop&crop=center" alt="About Us" class="img-fluid rounded-4 shadow" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    COUNTERS
+    ============================================================ -->
+    <section style="background:var(--light);padding:60px 0;">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-3 col-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="counter-box">
+                        <div class="counter-number" data-target="1250">0</div>
+                        <p>Orders Delivered</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="counter-box">
+                        <div class="counter-number" data-target="85">0</div>
+                        <p>Menu Items</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="counter-box">
+                        <div class="counter-number" data-target="2300">0</div>
+                        <p>Happy Customers</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="counter-box">
+                        <div class="counter-number" data-target="15">0</div>
+                        <p>Years of Experience</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    CUSTOMER TESTIMONIALS SLIDER
+    ============================================================ -->
+    <section class="section-padding" style="background:var(--white);">
+        <div class="container">
+            <div class="text-center" data-aos="fade-up">
+                <span class="hero-badge" style="background:rgba(232,93,58,0.1);">Testimonials</span>
+                <h2 class="section-title">What Our <span>Customers</span> Say</h2>
+                <div class="section-divider"></div>
+                <p class="section-subtitle">Real feedback from real people who love our food and service.</p>
+            </div>
+
+            <div class="swiper testimonial-slider" data-aos="fade-up" data-aos-delay="100">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Customer" class="testimonial-avatar" />
+                            <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                            <p class="testimonial-text">"Absolutely love the food! The delivery is always fast and the quality is top-notch. Highly recommend!"</p>
+                            <div class="testimonial-name">Sarah Johnson</div>
+                            <div class="testimonial-role">Regular Customer</div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Customer" class="testimonial-avatar" />
+                            <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                            <p class="testimonial-text">"Best pizza in town! The crust is perfect and the toppings are always fresh. My family loves this place."</p>
+                            <div class="testimonial-name">Michael Chen</div>
+                            <div class="testimonial-role">Food Enthusiast</div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Customer" class="testimonial-avatar" />
+                            <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                            <p class="testimonial-text">"The pasta carbonara is divine! I've ordered multiple times and it's consistently amazing. Great service too."</p>
+                            <div class="testimonial-name">Emily Davis</div>
+                            <div class="testimonial-role">Food Blogger</div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Customer" class="testimonial-avatar" />
+                            <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                            <p class="testimonial-text">"Their burgers are incredible! Juicy, flavorful, and delivered hot. The best delivery experience I've had."</p>
+                            <div class="testimonial-name">David Wilson</div>
+                            <div class="testimonial-role">Loyal Customer</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-pagination mt-4 position-relative"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    GALLERY
+    ============================================================ -->
+    <section class="section-padding" id="gallery" style="background:var(--light);">
+        <div class="container">
+            <div class="text-center" data-aos="fade-up">
+                <span class="hero-badge" style="background:rgba(232,93,58,0.1);">Gallery</span>
+                <h2 class="section-title">Our <span>Restaurant</span> Gallery</h2>
+                <div class="section-divider"></div>
+                <p class="section-subtitle">Take a visual tour of our delicious dishes and cozy ambiance.</p>
+            </div>
+
+            <div class="row g-3 gallery-grid">
+                <div class="col-lg-3 col-md-4 col-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=280&fit=crop&crop=center" alt="Food" />
+                        <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-6" data-aos="fade-up" data-aos-delay="150">
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&h=280&fit=crop&crop=center" alt="Food" />
+                        <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=280&fit=crop&crop=center" alt="Food" />
+                        <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-6" data-aos="fade-up" data-aos-delay="250">
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&h=280&fit=crop&crop=center" alt="Food" />
+                        <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=400&h=280&fit=crop&crop=center" alt="Food" />
+                        <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-6" data-aos="fade-up" data-aos-delay="350">
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=280&fit=crop&crop=center" alt="Food" />
+                        <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?w=400&h=280&fit=crop&crop=center" alt="Food" />
+                        <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-6" data-aos="fade-up" data-aos-delay="450">
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=400&h=280&fit=crop&crop=center" alt="Food" />
+                        <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    CONTACT US
+    ============================================================ -->
+    <section class="section-padding" id="contact">
+        <div class="container">
+            <div class="text-center" data-aos="fade-up">
+                <span class="hero-badge" style="background:rgba(232,93,58,0.1);">Contact</span>
+                <h2 class="section-title">Get In <span>Touch</span></h2>
+                <div class="section-divider"></div>
+                <p class="section-subtitle">Have questions or feedback? We'd love to hear from you.</p>
+            </div>
+
+            <div class="row g-4 mt-3">
+                <div class="col-lg-4" data-aos="fade-right" data-aos-delay="100">
+                    <div class="contact-info-box">
+                        <div class="icon-circle"><i class="fas fa-map-marker-alt"></i></div>
+                        <h5>Our Location</h5>
+                        <p>123 Food Street,<br />New York, NY 10001</p>
+                    </div>
+                </div>
+                <div class="col-lg-4" data-aos="fade-right" data-aos-delay="200">
+                    <div class="contact-info-box">
+                        <div class="icon-circle"><i class="fas fa-phone-alt"></i></div>
+                        <h5>Phone Number</h5>
+                        <p>+1 (555) 123-4567</p>
+                    </div>
+                </div>
+                <div class="col-lg-4" data-aos="fade-right" data-aos-delay="300">
+                    <div class="contact-info-box">
+                        <div class="icon-circle"><i class="fas fa-envelope"></i></div>
+                        <h5>Email Address</h5>
+                        <p>info@foodhub.com</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mt-4">
+                <div class="col-lg-6" data-aos="fade-right" data-aos-delay="100">
+                    <div class="map-container">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3024.2219901290355!2d-74.00369368400567!3d40.71312937933038!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25a316bb7b74d%3A0xb1271c4c5d17c0c1!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2s!4v1700000000000" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
+                    <div class="contact-form-wrapper bg-white p-4 p-md-5 rounded-4 shadow">
+                        <h5 class="mb-3">Send Us a Message</h5>
+                        <form id="contactForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Your Name</label>
+                                    <input type="text" class="form-control" placeholder="John Doe" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" placeholder="john@example.com" required />
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Subject</label>
+                                    <input type="text" class="form-control" placeholder="Subject" />
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Message</label>
+                                    <textarea class="form-control" rows="4" placeholder="Your message here..." required></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary-custom w-100">
+                                        <i class="fas fa-paper-plane"></i> Send Message
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    NEWSLETTER SECTION
+    ============================================================ -->
+    <section class="container" data-aos="fade-up">
+        <div class="newsletter-section">
+            <div class="row align-items-center">
+                <div class="col-lg-5">
+                    <h3 style="font-family:var(--font-primary);font-weight:700;color:var(--secondary);">
+                        Subscribe to Our <span style="color:var(--primary);">Newsletter</span>
+                    </h3>
+                    <p style="color:var(--text-light);">Get the latest updates on new dishes, offers, and events.</p>
+                </div>
+                <div class="col-lg-7">
+                    <form class="d-flex flex-wrap gap-2" id="newsletterForm">
+                        <input type="email" class="form-control flex-grow-1" placeholder="Enter your email" required style="min-width:200px;" />
+                        <button type="submit" class="btn btn-primary-custom">
+                            <i class="fas fa-envelope"></i> Subscribe
+                        </button>
+                    </form>
+                    <small style="color:var(--text-light);" class="mt-2 d-block">No spam, unsubscribe anytime.</small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    FOOTER
+    ============================================================ -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <h5><i class="fas fa-utensils" style="color:var(--primary);"></i> Food<span style="color:var(--primary);">Hub</span></h5>
+                    <p style="opacity:0.7;max-width:300px;">Delivering happiness with every meal. Fresh, delicious, and made with love.</p>
+                    <div class="social-icons mt-3">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links ps-0">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#menu">Menu</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-4">
+                    <h5>Opening Hours</h5>
+                    <ul class="footer-links ps-0" style="opacity:0.7;">
+                        <li>Mon - Fri: 10:00 AM – 11:00 PM</li>
+                        <li>Saturday: 11:00 AM – 12:00 AM</li>
+                        <li>Sunday: 12:00 PM – 10:00 PM</li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-4">
+                    <h5>Contact Info</h5>
+                    <ul class="footer-links ps-0" style="opacity:0.7;">
+                        <li><i class="fas fa-map-marker-alt me-2" style="color:var(--primary);"></i> 123 Food Street, NY</li>
+                        <li><i class="fas fa-phone me-2" style="color:var(--primary);"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-envelope me-2" style="color:var(--primary);"></i> info@foodhub.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="m-0">&copy; 2026 <strong>FoodHub</strong>. All rights reserved. Made with <i class="fas fa-heart" style="color:var(--primary);"></i> for food lovers.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================================
+    WELCOME POPUP MODAL
+    ============================================================ -->
+    <div class="modal fade promo-popup" id="welcomePopup" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" style="max-width:460px;">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="popup-icon"><i class="fas fa-concierge-bell"></i></div>
+                    <h3>Welcome to <span>FoodHub</span></h3>
+                    <p style="color:var(--text-light);">Delicious food, delivered fresh to your door.</p>
+                    <div class="popup-code">FIRST25</div>
+                    <p style="font-size:0.9rem;color:var(--text-light);">Use code for <strong>25% OFF</strong> your first order!</p>
+                    <button class="btn btn-primary-custom w-100" data-bs-dismiss="modal">
+                        <i class="fas fa-utensils"></i> Start Ordering
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    EXIT INTENT POPUP
+    ============================================================ -->
+    <div class="modal fade exit-popup" id="exitPopup" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width:440px;">
+            <div class="modal-content">
+                <div class="modal-body text-center p-4 p-md-5">
+                    <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div style="font-size:3rem;color:var(--primary);margin-bottom:12px;">🎉</div>
+                    <h4 style="font-weight:700;">Wait! Don't Leave Hungry</h4>
+                    <p style="color:var(--text-light);">Get <strong>15% OFF</strong> your next order when you subscribe now.</p>
+                    <form class="mt-3">
+                        <input type="email" class="form-control mb-2" placeholder="Enter your email" required />
+                        <button type="submit" class="btn btn-primary-custom w-100">
+                            <i class="fas fa-gift"></i> Claim Offer
+                        </button>
+                    </form>
+                    <small style="color:var(--text-light);">No thanks, I'll pay full price.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    SCRIPTS
+    ============================================================ -->
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js">
+    </script>
+
+    <!-- AOS Animation Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js">
+    </script>
+
+    <!-- Swiper.js Slider -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js">
+    </script>
+
+    <script>
+        // ============================================================
+        // LOADER
+        // ============================================================
+        window.addEventListener('load', function() {
+            document.getElementById('loader').classList.add('hidden');
+        });
+
+        // ============================================================
+        // AOS INIT
+        // ============================================================
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 60,
+        });
+
+        // ============================================================
+        // NAVBAR SCROLL EFFECT
+        // ============================================================
+        const nav = document.getElementById('mainNav');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 60) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // ============================================================
+        // SCROLL TO TOP
+        // ============================================================
+        const scrollBtn = document.getElementById('scrollTopBtn');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 500) {
+                scrollBtn.classList.add('visible');
+            } else {
+                scrollBtn.classList.remove('visible');
+            }
+        });
+        scrollBtn.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ============================================================
+        // ANIMATED COUNTERS
+        // ============================================================
+        const counters = document.querySelectorAll('.counter-number');
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const target = parseInt(el.dataset.target);
+                    let current = 0;
+                    const increment = Math.ceil(target / 60);
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            el.textContent = target;
+                            clearInterval(timer);
+                        } else {
+                            el.textContent = current;
+                        }
+                    }, 25);
+                    counterObserver.unobserve(el);
+                }
+            });
+        }, { threshold: 0.5 });
+        counters.forEach(c => counterObserver.observe(c));
+
+        // ============================================================
+        // CATEGORY FILTER
+        // ============================================================
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const foodItems = document.querySelectorAll('#foodGrid .col-lg-3');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const filter = this.dataset.filter;
+                foodItems.forEach(item => {
+                    if (filter === 'all' || item.dataset.category === filter) {
+                        item.style.display = 'block';
+                        item.style.animation = 'fadeInUp 0.5s ease forwards';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // ============================================================
+        // FLASH SALE TIMER
+        // ============================================================
+        let timerHours = 2,
+            timerMinutes = 34,
+            timerSeconds = 56;
+        const timerInterval = setInterval(() => {
+            timerSeconds--;
+            if (timerSeconds < 0) { timerSeconds = 59;
+                timerMinutes--; }
+            if (timerMinutes < 0) { timerMinutes = 59;
+                timerHours--; }
+            if (timerHours < 0) { clearInterval(timerInterval); return; }
+            document.getElementById('hours').textContent = String(timerHours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(timerMinutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(timerSeconds).padStart(2, '0');
+        }, 1000);
+
+        // ============================================================
+        // TESTIMONIALS SLIDER (Swiper)
+        // ============================================================
+        new Swiper('.testimonial-slider', {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            loop: true,
+            autoplay: { delay: 5000, disableOnInteraction: false },
+            pagination: { el: '.swiper-pagination', clickable: true },
+            breakpoints: {
+                768: { slidesPerView: 2, spaceBetween: 30 },
+                992: { slidesPerView: 3, spaceBetween: 30 },
+            },
+        });
+
+        // ============================================================
+        // ADD TO CART FUNCTIONALITY
+        // ============================================================
+        let cart = JSON.parse(localStorage.getItem('foodCart')) || [];
+
+        function updateCartBadge() {
+            const badge = document.getElementById('cartBadge');
+            const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+            badge.textContent = total;
+        }
+
+        function saveCart() {
+            localStorage.setItem('foodCart', JSON.stringify(cart));
+            updateCartBadge();
+        }
+
+        document.querySelectorAll('.add-to-cart').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = this.dataset.id;
+                const name = this.dataset.name;
+                const price = parseFloat(this.dataset.price);
+                const image = this.dataset.image;
+
+                const existing = cart.find(item => item.id === id);
+                if (existing) {
+                    existing.quantity += 1;
+                } else {
+                    cart.push({ id, name, price, image, quantity: 1 });
+                }
+                saveCart();
+                // Tiny feedback
+                const original = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-check"></i>';
+                setTimeout(() => { this.innerHTML = original; }, 800);
+
+                // Show toast-like feedback
+                showToast('Added to cart: ' + name);
+            });
+        });
+
+        // Simple toast notification
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.style.cssText =
+                'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:14px 30px;border-radius:50px;font-weight:500;box-shadow:0 12px 40px rgba(0,0,0,0.2);z-index:9999;opacity:0;transition:all 0.4s ease;font-size:0.95rem;';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            requestAnimationFrame(() => { toast.style.opacity = '1'; });
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 400);
+            }, 2500);
+        }
+
+        updateCartBadge();
+
+        // ============================================================
+        // WELCOME POPUP - show once per session
+        // ============================================================
+        if (!sessionStorage.getItem('welcomePopupShown')) {
+            setTimeout(() => {
+                const welcomeModal = new bootstrap.Modal(document.getElementById('welcomePopup'));
+                welcomeModal.show();
+                sessionStorage.setItem('welcomePopupShown', 'true');
+            }, 1200);
+        }
+
+        // ============================================================
+        // EXIT INTENT POPUP
+        // ============================================================
+        let exitShown = false;
+        document.addEventListener('mouseleave', function(e) {
+            if (e.clientY < 0 && !exitShown && !sessionStorage.getItem('exitPopupShown')) {
+                exitShown = true;
+                setTimeout(() => {
+                    const exitModal = new bootstrap.Modal(document.getElementById('exitPopup'));
+                    exitModal.show();
+                    sessionStorage.setItem('exitPopupShown', 'true');
+                }, 300);
+            }
+        });
+
+        // ============================================================
+        // CONTACT FORM SUBMIT
+        // ============================================================
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showToast('Thank you! Your message has been sent.');
+            this.reset();
+        });
+
+        // ============================================================
+        // NEWSLETTER FORM SUBMIT
+        // ============================================================
+        document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input[type="email"]').value;
+            if (email) {
+                showToast('Subscribed successfully! Check your email.');
+                this.reset();
+            }
+        });
+
+        // ============================================================
+        // SMOOTH SCROLL FOR NAV LINKS
+        // ============================================================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    const offset = 80;
+                    const top = target.getBoundingClientRect().top + window.scrollY - offset;
+                    window.scrollTo({ top, behavior: 'smooth' });
+                }
+            });
+        });
+
+        // ============================================================
+        // ADDITIONAL: Close mobile nav on link click
+        // ============================================================
+        document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+                const navCollapse = document.getElementById('navbarNav');
+                const bsCollapse = bootstrap.Collapse.getInstance(navCollapse);
+                if (bsCollapse) bsCollapse.hide();
+            });
+        });
+
+        // ============================================================
+        // KEYBOARD ACCESSIBILITY: ESC to close modals
+        // ============================================================
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal.show').forEach(m => {
+                    const modal = bootstrap.Modal.getInstance(m);
+                    if (modal) modal.hide();
+                });
+            }
+        });
+
+        console.log('🍽️ FoodHub Restaurant Website loaded successfully!');
+    </script>
+
+</body>
+</html>
